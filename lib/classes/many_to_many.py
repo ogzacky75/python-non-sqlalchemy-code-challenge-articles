@@ -82,7 +82,7 @@ class Article:
     def __init__(self, author, magazine, title):
         self.author = author
         self.magazine = magazine
-        self._title = title  # immutable
+        self._title = title  
 
         if not isinstance(title, str) or not (5 <= len(title) <= 50):
             raise Exception("Title must be 5–50 characters")
@@ -101,7 +101,6 @@ class Article:
 
     @title.setter
     def title(self, value):
-        # Immutable → ignore
         pass
 
     @property
