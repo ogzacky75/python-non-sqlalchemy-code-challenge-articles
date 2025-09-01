@@ -65,18 +65,47 @@ class Author:
         return list(set(set(mag.category for mag in self.magazines())))
 
 class Magazine:
+    all = []
+
     def __init__(self, name, category):
         self.name = name
         self.category = category
+        Magazine.all.append(self)
+    
+    @property
+    def name(self):
+        return self._name
+    @name.setter
+    def name(self, value):
+        if isinstance(value,str) and (2 <= len(value) <= 16):
+            self._name = value
+
+    @property
+    def category(self):
+        return self._category
+    @category.setter
+    def category(self, value):
+        if isinstance(value, str) and len(value.strip())>0:
+            self._category = value
 
     def articles(self):
-        pass
+        return [article for article in Article.all if article.magazine == self]
 
     def contributors(self):
-        pass
+        return list(set(article.author for article in self.articles()))
 
     def article_titles(self):
-        pass
+        if not self.articles():
+            return None
+        return [article.title for article in self.articles()]
 
     def contributing_authors(self):
-        pass
+        authors = [article.author for article in self.articles()]
+        result = [author for author in set(authors) if authors.count(author) > 2]
+        return result if result else None
+    
+    @classmethod
+    def top_publisher(cls):
+        if not Article.all:
+            return None
+        return max(cls.all, key=lambda mag: len(mag.articles()))
