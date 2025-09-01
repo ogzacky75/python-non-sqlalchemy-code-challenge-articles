@@ -35,19 +35,34 @@ class Article:
         
 class Author:
     def __init__(self, name):
+        if not isinstance(name, str) or name.strip() == 0:
+            raise Exception("Name must be a non-empty string")
         self.name = name
 
+    @property
+    def name(self):
+        return self._name
+    @name.setter
+    def name(self, value):
+        if hasattr(self, '_name'):
+            return
+        if isinstance(value, str) and len(value) > 0:
+            self._name = value
+    
+
     def articles(self):
-        pass
+        return [article for article in Article.all if article.author == self]
 
     def magazines(self):
-        pass
+        return list(set(article.magazine for article in self.articles()))
 
     def add_article(self, magazine, title):
-        pass
+        return Article(self, magazine, title)
 
     def topic_areas(self):
-        pass
+        if not self.articles():
+            return None
+        return list(set(set(mag.category for mag in self.magazines())))
 
 class Magazine:
     def __init__(self, name, category):
